@@ -5,20 +5,14 @@
  *  SEMESTRE: Segundo Semestre de 2017
 */
 
-#include <ctime>
-#include <cstdlib>
-#include <vector>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <iterator>
+#ifndef DISK
+#define DISK
+
+#include "helper.hpp"
 
 // Simple definition of types
-typedef std::string str; //< Defined string type
 
-typedef struct block {
-    unsigned char bytes_s[512];
-} block;
+typedef struct block block;
 
 typedef struct sector_array {
     unsigned sector[60];
@@ -75,3 +69,5 @@ private:
     str id;
 
 };
+
+#endif

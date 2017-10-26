@@ -7,8 +7,8 @@ INCLUDES = -I.
 
 #SRCS = virtualbeing.cpp population.cpp populate.cpp
 #DEPS = btree.hpp virtualbeing.hpp population.hpp
-SRCS = disk.cpp emulate.cpp
-DEPS = disk.hpp
+SRCS = helper.cpp disk.cpp emulate.cpp
+DEPS = constants.hpp helper.hpp disk.hpp
 OBJS = $(SRCS:.cpp=.o)
 
 MAIN = emulate
