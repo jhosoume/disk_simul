@@ -17,8 +17,13 @@
 
 #include "disk.hpp"
 
+#ifndef HELPER
+#define HELPER
+
 typedef std::string str; //< Defined string type
 
 void readFile(str file_name);
 
-void fileToArray(str file_name, track_array * disk);
+void fileToArray(str file_name, struct track_array *disk);
+
+#endif

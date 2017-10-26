@@ -15,7 +15,14 @@ void readFile(str file_name) {
     }
 }
 
-void fileToArray(str file_name, track_array * disk) {
+void fileToArray(str file_name, track_array *disk) {
+    char letter;
+    unsigned int indx = 0;
+    std::fstream fin(file_name, std::fstream::in);
+    while (fin >> std::noskipws >> letter) {
+            std::cout << letter; 
+            indx++;
+    }
 }
 
 
