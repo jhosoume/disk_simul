@@ -9,29 +9,40 @@
 #include <cstdlib>
 #include <vector>
 #include <string>
+#include <vector>
+#include <iostream>
+#include <iterator>
 
 // Simple definition of types
-//typedef MyTree::Node< std::string> BNode; //< Class that defines the base definition of a Binary Tree
-//typedef MyTree::Side Side; //< Enumerations to identify sides of a Binary Tree ramification
 typedef std::string str; //< Defined string type
 
 typedef struct block {
     unsigned char bytes_s[512];
 } block;
+
 typedef struct sector_array {
     unsigned sector[60];
 } sector_array;
+
 typedef struct track_array {
     sector_array track[5];
 } track_array;
-typedef struct fatlist_s{
-    char file_name[100];
+
+typedef struct fatlist{
+    str file_name;
     unsigned int first_sector;
+    fatlist(str name, unsigned int sector) 
+        : file_name{name}, first_sector{sector} {}
 } fatlist;
-typedef struct fatent_s {
+
+typedef struct fatent {
     unsigned int used;
     unsigned int eof;
-    unsigned int next;    
+    int next;    
+    fatent()
+        : used{0}, eof{0}, next{-1} {}
+    fatent(unsigned int is_used, unsigned int is_eof, unsigned int next_cluster)
+        : used{is_used}, eof{is_eof}, next{next_cluster} {}
 } fatent;
 
 /**

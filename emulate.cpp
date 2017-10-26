@@ -6,13 +6,22 @@
 */
 
 #include "disk.hpp"
+#include <iostream>
+using namespace std;
+
+const unsigned int numCylinder = 4;
+const unsigned int cluster_size = 4;
+const unsigned int seek_time = 4;
+const unsigned int latency = 6;
+const unsigned int transf = 12; 
+
 
 int main(void){
 
-    int numCylinder = 4;
-    
-    track_array *cylinder = 
-        (track_array *) malloc (numCylinder * sizeof(track_array));
+    track_array cylinder[numCylinder]; 
+    std::vector <fatlist> fat_files;
+    std::vector <fatent> fat_sectors;
 
     return 0;
 }
+
