@@ -5,16 +5,9 @@
  *  SEMESTRE: Segundo Semestre de 2017
 */
 
-#include <ctime>
-#include <cstdlib>
-#include <vector>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <iterator>
+#include "helper.hpp"
 
 // Simple definition of types
-typedef std::string str; //< Defined string type
 
 typedef struct block {
     unsigned char bytes_s[512];

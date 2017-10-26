@@ -7,8 +7,8 @@ INCLUDES = -I.
 
 #SRCS = virtualbeing.cpp population.cpp populate.cpp
 #DEPS = btree.hpp virtualbeing.hpp population.hpp
-SRCS = disk.cpp emulate.cpp
-DEPS = disk.hpp
+SRCS = helper.cpp disk.cpp emulate.cpp
+DEPS = helper.hpp disk.hpp
 OBJS = $(SRCS:.cpp=.o)
 
 MAIN = emulate
@@ -31,5 +31,5 @@ clean:
 	rm -f *.o $(MAIN) 
 # DO NOT DELETE
 
-disk.o: disk.hpp 
-teste.o: disk.hpp 
+disk.o: helper.hpp disk.hpp 
+teste.o: helper.hpp disk.hpp 
