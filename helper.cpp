@@ -24,3 +24,13 @@ void fileToArray(str file_name, track_array *disk) {
             indx++;
     }
 }
+
+void printOptions() {
+	std::cout << "\n\n1 - Escrever Arquivo \n";
+	std::cout << "2 - Ler Arquivo \n";
+	std::cout << "3 - Apagar Arquivo \n";
+	std::cout << "4 - Mostrar Tabela FAT \n";
+	std::cout << "5 - Sair \n\n";
+}
+
+

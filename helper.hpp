@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <iomanip>
 
 #include "constants.hpp"
 
@@ -18,5 +19,8 @@ typedef std::string str; //< Defined string type
 void readFile(str file_name);
 
 void fileToArray(str file_name, struct track_array *disk);
+
+void printOptions();
+
 
 #endif

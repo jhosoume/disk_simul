@@ -12,7 +12,9 @@
 
 // Simple definition of types
 
-typedef struct block block;
+typedef struct block {
+    unsigned char bytes_s[512];
+} block;
 
 typedef struct sector_array {
     unsigned sector[60];
@@ -38,6 +40,20 @@ typedef struct fatent {
     fatent(unsigned int is_used, unsigned int is_eof, unsigned int next_cluster)
         : used{is_used}, eof{is_eof}, next{next_cluster} {}
 } fatent;
+
+typedef struct file_sectors {
+    unsigned long int size;
+    std::vector <unsigned int> sectors;
+    file_sectors()
+        : size{0}, sectors{std::vector <unsigned int>()} {}
+} file_sectors;
+
+void get_sectors(unsigned int beg, unsigned int size); 
+
+void showFAT(std::vector <fatlist> files, std::vector <fatent> sectors);
+
+file_sectors fileSectors(unsigned int first_sector, 
+                            std::vector <fatent> sectors);
 
 /**
  * \class Being

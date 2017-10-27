@@ -6,15 +6,17 @@
 */
 
 #include "disk.hpp"
-
 #include <iostream>
-using namespace std;
 
 int main(void){
 
     track_array cylinder[num_cylinder]; 
     std::vector <fatlist> fat_files;
     std::vector <fatent> fat_sectors;
+    printOptions();
+    fat_files.push_back(fatlist("Nick", 0));
+
+    showFAT(fat_files, fat_sectors);
 
     return 0;
 }
