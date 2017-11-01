@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iterator>
 #include <iomanip>
+#include <sstream>
+#include <typeinfo>
 
 #include "constants.hpp"
 
@@ -22,5 +24,8 @@ void fileToArray(str file_name, struct track_array *disk);
 
 void printOptions();
 
+unsigned int getChoice();
+
+str listToString(std::vector <unsigned int> sectors);
 
 #endif

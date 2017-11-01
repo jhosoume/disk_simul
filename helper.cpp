@@ -33,4 +33,26 @@ void printOptions() {
 	std::cout << "5 - Sair \n\n";
 }
 
+unsigned int choicePrompt() {
+    unsigned int option;
+    std::cout << "\nEscolha uma das opções: ";
+    std::cin >> option;
+    return option;
+}
 
+unsigned int getChoice() {
+    unsigned int option = choicePrompt();
+    while ((option < 1) || (option > 5)) {
+        std::cout << "\nOpção inválida. Escolha entre uma das ações abaixo.\n";
+        printOptions();
+        option = choicePrompt();
+    }
+    return option;
+}
+
+str listToString(std::vector <unsigned int> sectors) {
+    std::stringstream result;
+    std::copy(sectors.begin(), sectors.end(), 
+                        std::ostream_iterator<unsigned int>(result, ","));
+    return result.str().substr(0, result.str().length() - 1);
+}

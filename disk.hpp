@@ -46,14 +46,18 @@ typedef struct file_sectors {
     std::vector <unsigned int> sectors;
     file_sectors()
         : size{0}, sectors{std::vector <unsigned int>()} {}
+    file_sectors(unsigned long int size, 
+                        std::vector <unsigned int> secs)
+        : size{size}, sectors{secs} {}
 } file_sectors;
-
-void get_sectors(unsigned int beg, unsigned int size); 
 
 void showFAT(std::vector <fatlist> files, std::vector <fatent> sectors);
 
 file_sectors fileSectors(unsigned int first_sector, 
                             std::vector <fatent> sectors);
+
+void writeFile(str file_name, std::vector <fatlist> file_list,
+                                              std::vector <fatent> fat);
 
 /**
  * \class Being
