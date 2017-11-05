@@ -10,7 +10,7 @@
 
 int main(void){
 
-    track_array cylinderss[num_cylinder]; 
+    track_array cylinders[num_cylinder]; 
     std::vector <fatlist> fat_files;
     std::vector <fatent> fat_sectors(num_cylinder * track_per_cylinder * sec_per_track);
     printOptions();
