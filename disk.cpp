@@ -67,11 +67,10 @@ void closeCluster(unsigned int num_sector, std::vector <fatent> sectors) {
 
 size_t freeCluster(std::vector <fatent> sectors) {
     fatent sector;
-    unsigned int indx = 0;
+    unsigned int indx;
     for (size_t track = 0; track < track_per_cylinder; track++) {
         for (size_t cylinder = 0; cylinder < num_cylinder; cylinder++) {
-            for (size_t cur_sector = 0; cur_sector < sec_per_track; 
-                                                       cur_sector + 4) {
+            for (size_t cur_sector = 0; cur_sector < sec_per_track; cur_sector += 4) {
                 indx = getIndxFromPos(sector_pos(cylinder, track, cur_sector));
                 sector = sectors.at(indx);
                 if(sector.used != 1) {
@@ -80,6 +79,7 @@ size_t freeCluster(std::vector <fatent> sectors) {
             }
         }
     }
+    throw "Sem setor livre";
 }
 
 size_t nextFreeSector(sector_pos pos, std::vector <fatent> sectors) {
@@ -89,7 +89,7 @@ size_t nextFreeSector(sector_pos pos, std::vector <fatent> sectors) {
         for (size_t cylinder = pos.cylinder; cylinder < num_cylinder; 
                                                                 cylinder++) {
             for (size_t cur_sector = pos.sector; cur_sector < sec_per_track; 
-                                                       cur_sector + 4) {
+                                                       cur_sector++) {
                 indx = getIndxFromPos(sector_pos(cylinder, track, cur_sector));
                 sector = sectors.at(indx);
                 if(sector.used != 1) {
@@ -98,6 +98,7 @@ size_t nextFreeSector(sector_pos pos, std::vector <fatent> sectors) {
             }
         }
     }
+    throw "Sem setor livre";
 }
 
 
