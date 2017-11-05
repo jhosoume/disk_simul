@@ -34,20 +34,97 @@ file_sectors fileSectors(unsigned int first_sector,
 }
 
 void writeFile(str file_name, std::vector <fatlist> file_list, 
-                                       std::vector <fatent> fat) {
-}
-
-size_t nextFreeSector(unsigned int start, std::vector <fatent> sectors) {
-    size_t indx = start;
-    fatent sec = sectors[indx];
-    while (indx < sectors.size() && sec.used != 0) {
-        indx++;
-        sec = sectors[indx];
+                   std::vector <fatent> fat, track_array cylinders[]) {
+    unsigned int size = 0;
+    char letter;
+    unsigned int sector_indx = freeCluster(fat);
+    sector_pos sector_pos = getPosFromIndx(sector_indx);
+    file_list.push_back(fatlist(file_name, sector_indx));
+    std::fstream fin(file_name, std::fstream::in);
+    while (fin >> std::noskipws >> letter) {
+        cylinders[sector_pos.cylinder].track[sector_pos.track].
+                   sector[sector_pos.sector].bytes_s[size] = letter; 
+        size++;
+        if (size % sector_size == 0) {
+            sector_indx = nextFreeSector(sector_pos, fat);
+            sector_pos = getPosFromIndx(sector_indx);
+            fat.at(sector_indx).writeSector(0, sector_indx);
+        }
     }
-    return indx; 
+    fat.at(sector_indx).writeSector(1);
+    closeCluster(sector_indx, fat);
+}
+
+void closeCluster(unsigned int num_sector, std::vector <fatent> sectors) {
+    if (num_sector % cluster_size != 0) {
+        unsigned int end = ((num_sector / cluster_size) + 1) * cluster_size;
+        for (size_t indx = num_sector; indx < end; indx++) {
+            sectors.at(indx).writeSector(1);
+        }
+    }
 }
 
 
+size_t freeCluster(std::vector <fatent> sectors) {
+    fatent sector;
+    unsigned int indx = 0;
+    for (size_t track = 0; track < track_per_cylinder; track++) {
+        for (size_t cylinder = 0; cylinder < num_cylinder; cylinder++) {
+            for (size_t cur_sector = 0; cur_sector < sec_per_track; 
+                                                       cur_sector + 4) {
+                indx = getIndxFromPos(sector_pos(cylinder, track, cur_sector));
+                sector = sectors.at(indx);
+                if(sector.used != 1) {
+                    return indx;
+                }
+            }
+        }
+    }
+}
+
+size_t nextFreeSector(sector_pos pos, std::vector <fatent> sectors) {
+    fatent sector;
+    unsigned int indx;
+    for (size_t track = pos.track; track < track_per_cylinder; track++) {
+        for (size_t cylinder = pos.cylinder; cylinder < num_cylinder; 
+                                                                cylinder++) {
+            for (size_t cur_sector = pos.sector; cur_sector < sec_per_track; 
+                                                       cur_sector + 4) {
+                indx = getIndxFromPos(sector_pos(cylinder, track, cur_sector));
+                sector = sectors.at(indx);
+                if(sector.used != 1) {
+                    return indx;
+                }
+            }
+        }
+    }
+}
+
+
+
+void fatent::writeSector(unsigned int eof) {
+    this->writeSector(eof, -1);
+}
+
+void fatent::writeSector(unsigned int eof, int next) {
+    this->used = 1; this->eof = eof; this->next = next;
+}
+
+sector_pos getPosFromIndx(unsigned int indx) {
+    if (indx > num_cylinder * track_per_cylinder * sec_per_track)
+        throw "Índice do setor ultrapassa o número de setores do disco";
+    sector_pos positions = sector_pos();
+    unsigned int tracks = indx / sec_per_track;
+    positions.sector = indx % sec_per_track;
+    positions.track = tracks % track_per_cylinder;
+    positions.cylinder = tracks / track_per_cylinder;
+    return positions;
+}
+
+unsigned int getIndxFromPos(sector_pos pos) {
+    return pos.sector + (pos.track * sec_per_track) + 
+        (pos.cylinder * track_per_cylinder * sec_per_track);
+}
 
 Disk::Disk() 
     : id{"-1"} {}
