@@ -52,12 +52,13 @@ unsigned int getChoice() {
 
 str getFileName() {
     str file_name;
-    std::cout << "Qual o nome do arquivo a ser lido?";
+    std::cout << "\nQual o nome do arquivo a ser lido?\n";
     std::cin >> file_name;
+    std::cout << "\n";
     return file_name;
 }
 
-str listToString(std::vector <unsigned int> sectors) {
+str listToString(std::vector <unsigned int> const &sectors) {
     std::stringstream result;
     std::copy(sectors.begin(), sectors.end(), 
                         std::ostream_iterator<unsigned int>(result, ","));

@@ -13,15 +13,21 @@
 // Simple definition of types
 
 typedef struct block {
-    unsigned char bytes_s[512];
+    unsigned char bytes_s[sector_size];
+    void setData(unsigned int byte, unsigned char data);
+    unsigned char getData(unsigned int byte);
 } block;
 
 typedef struct sector_array {
-    block sector[60];
+    block sector[sec_per_track];
+    void setData(unsigned int block, unsigned int byte, unsigned char data);
+    unsigned char getData(unsigned int block, unsigned int byte);
 } sector_array;
 
 typedef struct track_array {
-    sector_array track[5];
+    sector_array track[track_per_cylinder];
+    void setData(unsigned int track, unsigned int block, unsigned int byte, unsigned char data);
+    unsigned char getData(unsigned int track, unsigned int block, unsigned int byte);
 } track_array;
 
 typedef struct fatlist {
@@ -63,24 +69,32 @@ typedef struct file_sectors {
         : size{size}, sectors{secs} {}
 } file_sectors;
 
+//track_array* allocCylinders(unsigned int num_cyl);
+
 void showFAT(std::vector <fatlist> files, std::vector <fatent> sectors);
 
 file_sectors fileSectors(unsigned int first_sector, 
                             std::vector <fatent> sectors);
 
-void writeFile(str file_name, std::vector <fatlist> file_list,
-                        std::vector <fatent> fat, track_array cylinders[]);
+void writeFile(std::vector <fatlist> &file_list,
+                        std::vector <fatent> &fat, track_array* cylinders);
 
-void closeCluster(unsigned int num_sectors, std::vector <fatent> sectors);
+void readFile();
 
-size_t freeCluster(std::vector <fatent> sectors);
+void deleteFile();
 
-size_t nextFreeSector(sector_pos pos, std::vector <fatent> sectors);
+void closeCluster(unsigned int num_sectors, std::vector <fatent> &sectors);
+
+size_t freeCluster(std::vector <fatent> const &sectors);
+
+size_t nextFreeSector(sector_pos pos, std::vector <fatent> const &sectors);
 
 sector_pos getPosFromIndx(unsigned int indx);
 
 unsigned int getIndxFromPos(sector_pos pos);
 
+void run(std::vector <fatlist> &file_list,
+                   std::vector <fatent> &fat, track_array* cylinders);
 
 /**
  * \class Being

@@ -28,6 +28,6 @@ unsigned int getChoice();
 
 str getFileName();
 
-str listToString(std::vector <unsigned int> sectors);
+str listToString(std::vector <unsigned int> const &sectors);
 
 #endif
