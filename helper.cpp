@@ -50,6 +50,13 @@ unsigned int getChoice() {
     return option;
 }
 
+str getFileName() {
+    str file_name;
+    std::cout << "Qual o nome do arquivo a ser lido?";
+    std::cin >> file_name;
+    return file_name;
+}
+
 str listToString(std::vector <unsigned int> sectors) {
     std::stringstream result;
     std::copy(sectors.begin(), sectors.end(), 

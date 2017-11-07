@@ -26,6 +26,8 @@ void printOptions();
 
 unsigned int getChoice();
 
+str getFileName();
+
 str listToString(std::vector <unsigned int> sectors);
 
 #endif

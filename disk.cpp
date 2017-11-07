@@ -127,6 +127,22 @@ unsigned int getIndxFromPos(sector_pos pos) {
         (pos.cylinder * track_per_cylinder * sec_per_track);
 }
 
+void run() {
+    //TODO
+    unsigned int option;
+    while (true) {
+        printOptions();
+        option = getChoice();
+        switch(option) {
+            case 1: 
+            case 2:
+            case 3:
+            case 4:
+            case 5: return;
+        }
+    }
+}
+
 Disk::Disk() 
     : id{"-1"} {}
 
