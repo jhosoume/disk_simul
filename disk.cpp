@@ -112,7 +112,9 @@ size_t nextFreeSector(sector_pos pos, std::vector <fatent> const &sectors) {
                 if(sector.used != 1) {
                     return indx;
                 }
+                pos.sector = 0;
             }
+            pos.cylinder = 0;
         }
     }
     throw "Sem setor livre";
