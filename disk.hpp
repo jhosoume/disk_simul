@@ -11,7 +11,6 @@
 #include "helper.hpp"
 
 // Simple definition of types
-
 typedef struct block {
     unsigned char bytes_s[sector_size];
     void setData(unsigned int byte, unsigned char data);
@@ -53,10 +52,12 @@ typedef struct fatent {
     int next;    
     fatent()
         : used{0}, eof{0}, next{-1} {}
-    fatent(unsigned int is_used, unsigned int is_eof, unsigned int next_cluster)
+    fatent(unsigned int is_used, unsigned int is_eof, int next_cluster)
         : used{is_used}, eof{is_eof}, next{next_cluster} {}
-    void writeSector(unsigned int eof);
+    void mark();
+    void writeSector(unsigned int next);
     void writeSector(unsigned int eof, int next);
+    void print();
 } fatent;
 
 typedef struct file_sectors {
@@ -71,13 +72,13 @@ typedef struct file_sectors {
 
 //track_array* allocCylinders(unsigned int num_cyl);
 
-void showFAT(std::vector <fatlist> files, std::vector <fatent> sectors);
+void showFAT(std::vector <fatlist> const &files, std::vector <fatent> const &sectors);
 
 file_sectors fileSectors(unsigned int first_sector, 
                             std::vector <fatent> sectors);
 
 void writeFile(std::vector <fatlist> &file_list,
-                        std::vector <fatent> &fat, track_array* cylinders);
+                        std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
 void readFile();
 
@@ -94,7 +95,7 @@ sector_pos getPosFromIndx(unsigned int indx);
 unsigned int getIndxFromPos(sector_pos pos);
 
 void run(std::vector <fatlist> &file_list,
-                   std::vector <fatent> &fat, track_array* cylinders);
+                   std::vector <fatent> &fat, std::vector <track_array> &cyls);
 
 /**
  * \class Being

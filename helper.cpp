@@ -58,7 +58,7 @@ str getFileName() {
     return file_name;
 }
 
-str listToString(std::vector <unsigned int> const &sectors) {
+str listToString(std::vector <unsigned int> sectors) {
     std::stringstream result;
     std::copy(sectors.begin(), sectors.end(), 
                         std::ostream_iterator<unsigned int>(result, ","));
