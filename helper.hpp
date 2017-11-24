@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <sstream>
 #include <typeinfo>
+#include <algorithm>
 
 #include "constants.hpp"
 
@@ -24,7 +25,7 @@ void fileToArray(str file_name, struct track_array *disk);
 
 void printOptions();
 
-unsigned int getChoice();
+unsigned long getChoice();
 
 str getFileName();
 

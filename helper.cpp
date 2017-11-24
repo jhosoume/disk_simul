@@ -33,15 +33,17 @@ void printOptions() {
 	std::cout << "5 - Sair \n\n";
 }
 
-unsigned int choicePrompt() {
-    unsigned int option;
+unsigned long choicePrompt() {
+    unsigned long option;
+    str numbuf;
     std::cout << "\nEscolha uma das opções: ";
-    std::cin >> option;
+    std::cin >> numbuf;
+    option = std::strtoul(numbuf.c_str(), 0, 10);
     return option;
 }
 
-unsigned int getChoice() {
-    unsigned int option = choicePrompt();
+unsigned long getChoice() {
+    unsigned long option = choicePrompt();
     while ((option < 1) || (option > 5)) {
         std::cout << "\nOpção inválida. Escolha entre uma das ações abaixo.\n";
         printOptions();

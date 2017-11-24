@@ -26,6 +26,7 @@ int main(void){
 
 
     run(fat_files, fat_sectors, cylinders);
+    std::cout << "\n Checking " << "sec at 0 is" << fat_sectors.at(0).used;
 
 
     return 0;

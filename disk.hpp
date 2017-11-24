@@ -34,6 +34,8 @@ typedef struct fatlist {
     unsigned int first_sector;
     fatlist(str name, unsigned int sector) 
         : file_name{name}, first_sector{sector} {}
+    fatlist()
+        : file_name{"not found"}, first_sector{0} {}
 } fatlist;
 
 typedef struct sector_pos {
@@ -58,6 +60,7 @@ typedef struct fatent {
     void writeSector(unsigned int next);
     void writeSector(unsigned int eof, int next);
     void print();
+    void free();
 } fatent;
 
 typedef struct file_sectors {
@@ -77,22 +80,36 @@ void showFAT(std::vector <fatlist> const &files, std::vector <fatent> const &sec
 file_sectors fileSectors(unsigned int first_sector, 
                             std::vector <fatent> sectors);
 
-void writeFile(std::vector <fatlist> &file_list,
+void writeFile(str const &file_name, std::vector <fatlist> &file_list,
                         std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
-void readFile();
+void readFile(str filename, std::vector <fatlist> &file_list,
+             std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
-void deleteFile();
+void deleteFile(str filename, std::vector <fatlist> &file_list,
+             std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
 void closeCluster(unsigned int num_sectors, std::vector <fatent> &sectors);
 
 size_t freeCluster(std::vector <fatent> const &sectors);
+
+sector_pos begOfCluster(sector_pos pos);
+
+sector_pos begOfCluster(unsigned int indx);
+
+size_t nextFreeCluster(sector_pos pos, std::vector <fatent> const &sectors);
 
 size_t nextFreeSector(sector_pos pos, std::vector <fatent> const &sectors);
 
 sector_pos getPosFromIndx(unsigned int indx);
 
 unsigned int getIndxFromPos(sector_pos pos);
+
+fatlist findFat(str const &name, std::vector <fatlist> &fat_list);
+
+bool inFat(str const &name, std::vector <fatlist> &fat_list);
+
+void eraseFat(str const &name, std::vector <fatlist> &fat_list);
 
 void run(std::vector <fatlist> &file_list,
                    std::vector <fatent> &fat, std::vector <track_array> &cyls);
