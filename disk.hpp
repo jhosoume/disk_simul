@@ -89,7 +89,8 @@ void readFile(str filename, std::vector <fatlist> &file_list,
 void deleteFile(str filename, std::vector <fatlist> &file_list,
              std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
-void closeCluster(unsigned int num_sectors, std::vector <fatent> &sectors);
+void closeCluster(unsigned int num_sector, std::vector <fatent> &sectors,
+                                          unsigned int byte, std::vector <track_array> &cylinders);
 
 size_t freeCluster(std::vector <fatent> const &sectors);
 
@@ -113,6 +114,9 @@ void eraseFat(str const &name, std::vector <fatlist> &fat_list);
 
 void run(std::vector <fatlist> &file_list,
                    std::vector <fatent> &fat, std::vector <track_array> &cyls);
+
+unsigned int fileSizeDisk (str const &name, std::vector <fatlist> &files,
+                                                  std::vector <fatent> const &sectors);
 
 /**
  * \class Being

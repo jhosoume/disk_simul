@@ -36,7 +36,7 @@ file_sectors fileSectors(unsigned int first_sector,
 void writeFile(str const &file_name, std::vector <fatlist> &file_list, 
                    std::vector <fatent> &fat, std::vector <track_array> &cylinders) {
     // TODO Calculate time spent writing the file
-    unsigned int size = 0;
+    unsigned int byte = 0;
     unsigned int num_secs = 1;
     char letter;
     unsigned int sector_indx = freeCluster(fat);
@@ -46,21 +46,21 @@ void writeFile(str const &file_name, std::vector <fatlist> &file_list,
     file_list.push_back(fatlist(file_name, sector_indx));
     std::fstream fin(file_name, std::fstream::in);
     while (fin >> std::noskipws >> letter) {
-        cylinders.at(sector_pos.cylinder).setData(sector_pos.track, sector_pos.sector, size, letter);
-        std::cout << " ->Onde: " << sector_pos.cylinder << sector_pos.track << sector_pos.sector << " " << size << " " << letter << std::endl;
-        ++size;
-        if (size % sector_size == 0) {
+        cylinders.at(sector_pos.cylinder).setData(sector_pos.track, sector_pos.sector, byte, letter);
+        std::cout << " ->Onde: " << sector_pos.cylinder << sector_pos.track << sector_pos.sector << " " << byte << " " << letter << std::endl;
+        ++byte;
+        if (byte % sector_size == 0) {
             previous_indx = sector_indx;
             sector_indx = nextFreeSector(sector_pos, fat);
             fat.at(previous_indx).writeSector(sector_indx);
             fat.at(sector_indx).mark();
             sector_pos = getPosFromIndx(sector_indx);
-            size = 0;
+            byte = 0;
             ++num_secs;
         }
     }
     fat.at(sector_indx).writeSector(1, -1);
-    closeCluster(sector_indx, fat);
+    closeCluster(sector_indx, fat, byte, cylinders);
 }
 
 
@@ -110,13 +110,23 @@ void deleteFile(str filename, std::vector <fatlist> &file_list,
     eraseFat(filename, file_list);
 }
 
-void closeCluster(unsigned int num_sector, std::vector <fatent> &sectors) {
+void fillBlock(unsigned int num_sector, unsigned int byte, std::vector <track_array> &cylinders) {
+    sector_pos pos = getPosFromIndx(num_sector);
+    for (size_t indx = byte + 1; indx < sector_size; ++indx) {
+        cylinders.at(pos.cylinder).setData(pos.track, pos.sector, indx, '\0');
+    }
+}
+
+void closeCluster(unsigned int num_sector, std::vector <fatent> &sectors, 
+                                        unsigned int byte, std::vector <track_array> &cylinders) {
     //TODO Write empty spaces with null
+    fillBlock(num_sector, byte, cylinders);
     if ((num_sector + 1) % cluster_size != 0) {
         unsigned int end = ((num_sector / cluster_size) + 1) * cluster_size;
         size_t indx = num_sector;
         for (; indx < end - 1; ++indx) {
             sectors.at(indx).writeSector(indx + 1);
+            fillBlock(indx, byte, cylinders);
         }
         sectors.at(indx).writeSector(-1);
     }
@@ -310,8 +320,7 @@ void run(std::vector <fatlist> &file_list,
                         readFile(name, file_list, fat, cyls);
                     break;
             case 3: name = getFileName();
-            //TODO: free space accordingly to space occupied in disk!!
-                    size = fileSizeDisk(name);
+                    size = fileSizeDisk(name, file_list, fat);
                     if (!inFat(name, file_list)) 
                         std::cout << 
                             "\n[NOT FOUND]Não há arquivo com este nome\n";
@@ -327,9 +336,23 @@ void run(std::vector <fatlist> &file_list,
     }
 }
 
+unsigned int fileSizeDisk (str const &name, std::vector <fatlist>  &files, 
+                                                std::vector <fatent> const &sectors) {
+    unsigned int size = 0;
+    fatlist file = findFat(name, files);
+    fatent current_sec = sectors.at(file.first_sector);
+    while (current_sec.next > 0) {
+        current_sec = sectors.at(current_sec.next);
+        ++size;
+    }
+    size *= sector_size;
+    return size;
+}
+
 Disk::Disk() 
     : id{"-1"} {}
 
 str Disk::getId(){
     return id;
 }
+
