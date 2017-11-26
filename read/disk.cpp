@@ -35,7 +35,6 @@ file_sectors fileSectors(unsigned int first_sector,
 
 void writeFile(str const &file_name, std::vector <fatlist> &file_list, 
                    std::vector <fatent> &fat, std::vector <track_array> &cylinders) {
-    // TODO Calculate time spent writing the file
     unsigned int size = 0;
     unsigned int num_secs = 1;
     char letter;
@@ -310,8 +309,7 @@ void run(std::vector <fatlist> &file_list,
                         readFile(name, file_list, fat, cyls);
                     break;
             case 3: name = getFileName();
-            //TODO: free space accordingly to space occupied in disk!!
-                    size = fileSizeDisk(name);
+                    size = fileSize(name);
                     if (!inFat(name, file_list)) 
                         std::cout << 
                             "\n[NOT FOUND]Não há arquivo com este nome\n";
@@ -333,3 +331,4 @@ Disk::Disk()
 str Disk::getId(){
     return id;
 }
+                                                                                                                                                                                                                                                                                                                                                                                                        

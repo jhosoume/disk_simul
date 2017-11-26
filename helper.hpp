@@ -19,9 +19,9 @@
 
 typedef std::string str; //< Defined string type
 
-void readFile(str file_name);
+void readFile(str const &file_name);
 
-void fileToArray(str file_name, struct track_array *disk);
+void fileToArray(str const &file_name, struct track_array *disk);
 
 void printOptions();
 
@@ -29,6 +29,8 @@ unsigned long getChoice();
 
 str getFileName();
 
-str listToString(std::vector <unsigned int> sectors);
+str listToString(std::vector <unsigned int> const &sectors);
+
+unsigned int fileSize(str const &file_name);
 
 #endif

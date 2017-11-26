@@ -7,7 +7,7 @@
 
 #include "helper.hpp"
 
-void readFile(str file_name) {
+void readFile(str const &file_name) {
     char letter;
     std::fstream fin(file_name, std::fstream::in);
     while (fin >> std::noskipws >> letter) {
@@ -15,7 +15,7 @@ void readFile(str file_name) {
     }
 }
 
-void fileToArray(str file_name, track_array *disk) {
+void fileToArray(str const &file_name, track_array *disk) {
     char letter;
     unsigned int indx = 0;
     std::fstream fin(file_name, std::fstream::in);
@@ -60,9 +60,21 @@ str getFileName() {
     return file_name;
 }
 
-str listToString(std::vector <unsigned int> sectors) {
+str listToString(std::vector <unsigned int> const &sectors) {
     std::stringstream result;
     std::copy(sectors.begin(), sectors.end(), 
                         std::ostream_iterator<unsigned int>(result, ","));
     return result.str().substr(0, result.str().length() - 1);
 }
+
+unsigned int fileSize(str const &file_name) {
+    unsigned int size = 0;
+    std::fstream file(file_name.c_str(), std::fstream::in);
+    if (!file.is_open())
+        return size;
+    file.seekg(0, std::ios::end);
+    size = file.tellg();
+    file.close();
+    return size;
+}
+
