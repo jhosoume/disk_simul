@@ -118,6 +118,11 @@ void run(std::vector <fatlist> &file_list,
 unsigned int fileSizeDisk (str const &name, std::vector <fatlist> &files,
                                                   std::vector <fatent> const &sectors);
 
+unsigned int numSeeks(std::vector <unsigned int> const &sectors);
+
+double measureTime(file_sectors const &sectors);
+
+
 /**
  * \class Being
  * \brief A virtual being with random characteristics. Can reproduce and constitutes a population.

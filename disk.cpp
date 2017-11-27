@@ -41,6 +41,7 @@ void writeFile(str const &file_name, std::vector <fatlist> &file_list,
     char letter;
     unsigned int sector_indx = freeCluster(fat);
     unsigned int previous_indx = sector_indx;
+    unsigned int first_sec = sector_indx;
     fat.at(sector_indx).mark();
     sector_pos sector_pos = getPosFromIndx(sector_indx);
     file_list.push_back(fatlist(file_name, sector_indx));
@@ -61,6 +62,10 @@ void writeFile(str const &file_name, std::vector <fatlist> &file_list,
     }
     fat.at(sector_indx).writeSector(1, -1);
     closeCluster(sector_indx, fat, byte, cylinders);
+    std::cout.precision(3);
+    std::cout << "\nTempo para escrita do arquivo " << std::setw(4) 
+            << ceil(measureTime(fileSectors(first_sec, fat))) 
+            << std::endl;
 }
 
 
@@ -145,7 +150,7 @@ size_t freeCluster(std::vector <fatent> const &sectors) {
             }
         }
     }
-    throw "Sem setor livre";
+    throw std::length_error("Sem setor livre");
 }
 
 sector_pos begOfCluster(sector_pos pos) {
@@ -250,7 +255,7 @@ sector_pos getPosFromIndx(unsigned int indx) {
     unsigned int tracks;
     std::cout << "\nINDX " << indx;
     if (indx > num_cylinder * track_per_cylinder * sec_per_track)
-        throw "Índice do setor ultrapassa o número de setores do disco";
+        throw std::invalid_argument("Índice do setor ultrapassa o número de setores do disco");
     sector_pos positions = sector_pos();
     tracks = indx / sec_per_track;
     positions.sector = indx % sec_per_track;
@@ -336,7 +341,7 @@ void run(std::vector <fatlist> &file_list,
     }
 }
 
-unsigned int fileSizeDisk (str const &name, std::vector <fatlist>  &files, 
+unsigned int fileSizeDisk(str const &name, std::vector <fatlist>  &files, 
                                                 std::vector <fatent> const &sectors) {
     unsigned int size = 0;
     fatlist file = findFat(name, files);
@@ -347,6 +352,28 @@ unsigned int fileSizeDisk (str const &name, std::vector <fatlist>  &files,
     }
     size *= sector_size;
     return size;
+}
+
+unsigned int numSeeks(std::vector <unsigned int> const &sectors) {
+    unsigned int cyls = 1;
+    unsigned int current_cyl = getPosFromIndx(sectors.at(0)).cylinder;
+    unsigned int next_cyl;
+    for (auto sector : sectors) {
+        next_cyl = getPosFromIndx(sector).cylinder;
+        if (current_cyl != next_cyl) {
+            ++cyls;
+            current_cyl = next_cyl;
+        }
+    }
+    return cyls;
+}
+
+double measureTime(file_sectors const &sectors) {
+    double num_tracks = sectors.size/(sector_size*60);
+    double transfer = num_tracks * time_transf; 
+    double seek = numSeeks(sectors.sectors) * time_mean_seek;
+    double latency = num_tracks * time_latency;
+    return  transfer + seek + latency;
 }
 
 Disk::Disk() 
