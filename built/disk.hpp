@@ -10,7 +10,7 @@
 
 #include "helper.hpp"
 
-// Simple definition of types
+/* Simple definition of types that store information */
 typedef struct block {
     unsigned char bytes_s[sector_size];
     void setData(unsigned int byte, unsigned char data);
@@ -28,7 +28,9 @@ typedef struct track_array {
     void setData(unsigned int track, unsigned int block, unsigned int byte, unsigned char data);
     unsigned char getData(unsigned int track, unsigned int block, unsigned int byte);
 } track_array;
+ /*_________________________________________________________________________*/
 
+/* List of files saved */
 typedef struct fatlist {
     str file_name;
     unsigned int first_sector;
@@ -38,6 +40,9 @@ typedef struct fatlist {
         : file_name{"not found"}, first_sector{0} {}
 } fatlist;
 
+ /*_________________________________________________________________________*/
+
+ /* Stores the cylinder, track and sector position of an indx(defined sector)*/
 typedef struct sector_pos {
     unsigned int cylinder;
     unsigned int track;
@@ -47,7 +52,9 @@ typedef struct sector_pos {
     sector_pos(unsigned int cyl, unsigned int trck, unsigned int sec)
         : cylinder{cyl}, track{trck}, sector{sec} {}
 } sector_position;
+ /*_________________________________________________________________________*/
 
+/* Stores the state of each sector */
 typedef struct fatent {
     unsigned int used;
     unsigned int eof;
@@ -62,7 +69,9 @@ typedef struct fatent {
     void print();
     void free();
 } fatent;
+ /*_________________________________________________________________________*/
 
+/* Total size and all sectors that belong to a certain file */
 typedef struct file_sectors {
     unsigned long int size;
     std::vector <unsigned int> sectors;
@@ -72,23 +81,38 @@ typedef struct file_sectors {
                         std::vector <unsigned int> secs)
         : size{size}, sectors{secs} {}
 } file_sectors;
+ /*_________________________________________________________________________*/
 
-//track_array* allocCylinders(unsigned int num_cyl);
 
+/* Function that presents the files stored. Show its sectors and size */
 void showFAT(std::vector <fatlist> const &files, std::vector <fatent> const &sectors);
 
+/* Traverse the Fat Entity to obtain the location of the portions 
+ * of the file. The result is a structure (file_sectors) with the 
+ * total size in disk besides all the occupied sectos in a vector.  */
 file_sectors fileSectors(unsigned int first_sector, 
                             std::vector <fatent> sectors);
 
+/* Directory is based in the folder that the program is being run. 
+ * Reads a file entry and stores in the virtual HD. The total time to write th 
+ * file is written in the end. */
 void writeFile(str const &file_name, std::vector <fatlist> &file_list,
                         std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
+/* Writes the information stored in the virtual HD to a file in the previous 
+ * directory inside folder named read. Get all bytes bounded to a filename. */
 void readFile(str filename, std::vector <fatlist> &file_list,
              std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
+/* Remove a file from the FAT list. Data cannot be retrieved. */
 void deleteFile(str filename, std::vector <fatlist> &file_list,
              std::vector <fatent> &fat, std::vector <track_array> &cylinders);
 
+/* To prevent data from previous files stay in the not fully filled cluster,
+ * write null char when closing. */
+void fillBlock(unsigned int num_sector, unsigned int byte, std::vector <track_array> &cylinders);
+
+/* Closes the sectors that belongs to a given cluster*/
 void closeCluster(unsigned int num_sector, std::vector <fatent> &sectors,
                                           unsigned int byte, std::vector <track_array> &cylinders);
 
@@ -123,35 +147,13 @@ unsigned int numSeeks(std::vector <unsigned int> const &sectors);
 double measureTime(file_sectors const &sectors);
 
 
-/**
- * \class Being
- * \brief A virtual being with random characteristics. Can reproduce and constitutes a population.
- * Defines a virtual Being from several established genes that corresponds to
- * specific phenotypes. If the being
- * was not generated from a custom reproduction of the species, his carachteristics
- * are selected at random. His identification consists of a identification number and
- * parents numbering.
- */
 class Disk {
 public:
-
-	/**
-     * Being constructor to just defines its size to the compilation process.
-     * @see Being(str value)
-     * @see Being(str value, str p1, str p2)
-     */
     Disk();
-
-    /*
-     * Auxiliary function to just provide the id from the current object.
-     * Extracts the id from the object from whom this methods is called
-     * @return return a string corresponding to the Being id.
-     */
     str getId();
 
 private:
     str id;
-
 };
 
 #endif

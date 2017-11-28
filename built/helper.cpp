@@ -6,7 +6,7 @@
 */
 
 #include "helper.hpp"
-
+/* Simple function to open and print the content*/
 void readFile(str const &file_name) {
     char letter;
     std::fstream fin(file_name, std::fstream::in);
@@ -14,6 +14,7 @@ void readFile(str const &file_name) {
             std::cout << letter; 
     }
 }
+/*_________________________________________________________*/
 
 void fileToArray(str const &file_name, track_array *disk) {
     char letter;
@@ -24,7 +25,9 @@ void fileToArray(str const &file_name, track_array *disk) {
             indx++;
     }
 }
+/*_________________________________________________________*/
 
+/* Pinter of options */
 void printOptions() {
 	std::cout << "\n\n1 - Escrever Arquivo \n";
 	std::cout << "2 - Ler Arquivo \n";
@@ -32,6 +35,7 @@ void printOptions() {
 	std::cout << "4 - Mostrar Tabela FAT \n";
 	std::cout << "5 - Sair \n\n";
 }
+/*_________________________________________________________*/
 
 unsigned long choicePrompt() {
     unsigned long option;
@@ -41,6 +45,7 @@ unsigned long choicePrompt() {
     option = std::strtoul(numbuf.c_str(), 0, 10);
     return option;
 }
+/*_________________________________________________________*/
 
 unsigned long getChoice() {
     unsigned long option = choicePrompt();
@@ -51,6 +56,7 @@ unsigned long getChoice() {
     }
     return option;
 }
+/*_________________________________________________________*/
 
 str getFileName() {
     str file_name;
@@ -59,6 +65,7 @@ str getFileName() {
     std::cout << "\n";
     return file_name;
 }
+/*_________________________________________________________*/
 
 str listToString(std::vector <unsigned int> const &sectors) {
     std::stringstream result;
@@ -66,6 +73,7 @@ str listToString(std::vector <unsigned int> const &sectors) {
                         std::ostream_iterator<unsigned int>(result, ","));
     return result.str().substr(0, result.str().length() - 1);
 }
+/*_________________________________________________________*/
 
 unsigned int fileSize(str const &file_name) {
     unsigned int size = 0;
@@ -77,4 +85,5 @@ unsigned int fileSize(str const &file_name) {
     file.close();
     return size;
 }
+/*_________________________________________________________*/
 

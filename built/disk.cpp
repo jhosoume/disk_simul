@@ -312,9 +312,10 @@ void printSectors(std::vector <fatent> const &fat) {
 }
  /*_________________________________________________________________________*/
 
+/* Change from position(detail cylinder, track and sector) to sector index 
+ * and vice versa */
 sector_pos getPosFromIndx(unsigned int indx) {
     unsigned int tracks;
-    std::cout << "\nINDX " << indx;
     if (indx > num_cylinder * track_per_cylinder * sec_per_track)
         throw std::invalid_argument("Índice do setor ultrapassa o número de setores do disco");
     sector_pos positions = sector_pos();
@@ -329,7 +330,10 @@ unsigned int getIndxFromPos(sector_pos pos) {
     return pos.sector + (pos.track * sec_per_track) + 
         (pos.cylinder * track_per_cylinder * sec_per_track);
 }
+ /*_________________________________________________________________________*/
 
+/* Helper functions to find an entry in the fat, discover if a file is 
+ * stored and remove the file. */
 fatlist findFat(str const &name, std::vector <fatlist> &fat_list) {
     for (fatlist file : fat_list) {
         if (file.file_name == name)
@@ -348,13 +352,16 @@ bool inFat(str const &name, std::vector <fatlist> &fat_list) {
 
 
 void eraseFat(str const &name, std::vector <fatlist> &fat_list) {
+    /* Uses lambda function */
     fat_list.erase(
         std::remove_if(fat_list.begin(), fat_list.end(), 
             [&name](fatlist file) -> bool { return file.file_name == name; }),
         fat_list.end()
     );
 }
+ /*_________________________________________________________________________*/
 
+/*Main function. Defined behaviour accordingly to option chosen*/
 void run(std::vector <fatlist> &file_list, 
                    std::vector <fatent> &fat, std::vector <track_array> &cyls) {
     unsigned long option, size;
@@ -401,6 +408,7 @@ void run(std::vector <fatlist> &file_list,
     }
 }
 
+/* Calculates the total size of file stored in the virtual HD (include empty sectors;) */
 unsigned int fileSizeDisk(str const &name, std::vector <fatlist>  &files, 
                                                 std::vector <fatent> const &sectors) {
     unsigned int size = 0;
@@ -414,6 +422,7 @@ unsigned int fileSizeDisk(str const &name, std::vector <fatlist>  &files,
     return size;
 }
 
+/* Calculates the number of seeks to performe a task (change of cylinder )*/
 unsigned int numSeeks(std::vector <unsigned int> const &sectors) {
     unsigned int cyls = 1;
     unsigned int current_cyl = getPosFromIndx(sectors.at(0)).cylinder;
@@ -427,7 +436,7 @@ unsigned int numSeeks(std::vector <unsigned int> const &sectors) {
     }
     return cyls;
 }
-
+/* Total time including seek, latency and transfer*/
 double measureTime(file_sectors const &sectors) {
     double num_tracks = sectors.size/(sector_size*60.0);
     double transfer = num_tracks * time_transf; 
